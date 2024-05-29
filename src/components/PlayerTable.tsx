@@ -61,12 +61,12 @@ export const PlayerTable = ({ players }: IProps) => {
             {selectedPlayerId === player.id && playerDetails && (
               <tr>
                 <td>
-                  <div>ID: {player.id}</div>
-                  <div>Name: {player.name}</div>
-                  <div>Team: {player.team}</div>
-                  <div>Number: {player.number}</div>
-                  <div>Age: {player.age}</div>
-                  <div>Position: {player.position}</div>
+                  <div>ID: {playerDetails.id}</div>
+                  <div>Name: {playerDetails.name}</div>
+                  <div>Team: {playerDetails.team}</div>
+                  <div>Number: {playerDetails.number}</div>
+                  <div>Age: {playerDetails.age}</div>
+                  <div>Position: {playerDetails.position}</div>
                 </td>
               </tr>
             )}
