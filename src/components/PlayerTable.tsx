@@ -33,46 +33,53 @@ export const PlayerTable = ({ players }: IProps) => {
   }, [selectedPlayerId]);
 
   const showPlayerDetails = (id: number) => {
-    setSelectedPlayerId(selectedPlayerId === id ? null : id); 
+    setSelectedPlayerId(selectedPlayerId === id ? null : id);
   };
 
   return (
-    <table className="table-auto">
-      <thead>
-        <tr>
-          <th className="text-right px-5">Id</th>
-          <th className="text-right px-5">Name</th>
-          <th className="text-right px-5">Team</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {players.map(player => (
-          <>
-            <tr
-              key={player.id}
-              className='hover:bg-gray-300 cursor-pointer'
-              onClick={() => showPlayerDetails(player.id)}
-            >
-              <td className="text-right px-5">{player.id}</td>
-              <td className="text-right px-5">{player.name}</td>
-              <td className="text-right px-5">{player.team}</td>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-300">
+      <div className="overflow-x-auto w-full max-w-4xl">
+        <table className="min-w-full bg-white shadow-lg rounded-lg">
+          <thead>
+            <tr className="bg-gray-800 text-white">
+              <th className="pl-24 py-3 text-left text-xs font-medium uppercase tracking-wider">Id</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Team</th>
             </tr>
-            {selectedPlayerId === player.id && playerDetails && (
-              <tr>
-                <td>
-                  <div>ID: {playerDetails.id}</div>
-                  <div>Name: {playerDetails.name}</div>
-                  <div>Team: {playerDetails.team}</div>
-                  <div>Number: {playerDetails.number}</div>
-                  <div>Age: {playerDetails.age}</div>
-                  <div>Position: {playerDetails.position}</div>
-                </td>
-              </tr>
-            )}
-          </>
-        ))}
-      </tbody>
-    </table>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {players.map(player => (
+              <>
+                <tr
+                  key={player.id}
+                  className={`hover:bg-gray-300 cursor-pointer ${selectedPlayerId === player.id ? 'bg-gray-500' : ''}`}
+                  onClick={() => showPlayerDetails(player.id)}
+                >
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center">{player.id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{player.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{player.team}</td>
+                </tr>
+                {selectedPlayerId === player.id && playerDetails && (
+                  <tr>
+                    <td colSpan={3} className="px-6 py-4">
+                      <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div><strong>ID:</strong> {playerDetails.id}</div>
+                          <div><strong>Name:</strong> {playerDetails.name}</div>
+                          <div><strong>Team:</strong> {playerDetails.team}</div>
+                          <div><strong>Number:</strong> {playerDetails.number}</div>
+                          <div><strong>Age:</strong> {playerDetails.age}</div>
+                          <div><strong>Position:</strong> {playerDetails.position}</div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
