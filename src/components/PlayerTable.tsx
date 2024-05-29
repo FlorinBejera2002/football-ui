@@ -32,7 +32,7 @@ export const PlayerTable = ({ players }: IProps) => {
     }
   }, [selectedPlayerId]);
 
-  const handleRowClick = (id: number) => {
+  const showPlayerDetails = (id: number) => {
     setSelectedPlayerId(selectedPlayerId === id ? null : id); 
   };
 
@@ -52,7 +52,7 @@ export const PlayerTable = ({ players }: IProps) => {
             <tr
               key={player.id}
               className='hover:bg-gray-300 cursor-pointer'
-              onClick={() => handleRowClick(player.id)}
+              onClick={() => showPlayerDetails(player.id)}
             >
               <td className="text-right px-5">{player.id}</td>
               <td className="text-right px-5">{player.name}</td>
