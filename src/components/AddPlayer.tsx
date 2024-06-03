@@ -30,7 +30,7 @@ export default function AddPlayer() {
 
     return (
         <div>
-            <form className='grid grid-cols-3 gap-5 mb-44' onSubmit={() => fetchNewPlayer(addName, addNumber, addAge, addTeam, addPosition)}>
+            <form className='grid grid-cols-3 gap-5 mt-20 mb-44' onSubmit={() => fetchNewPlayer(addName, addNumber, addAge, addTeam, addPosition)}>
                 <input
                     placeholder='Name'
                     type="text"

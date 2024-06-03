@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { IFootballPlayer } from "../types";
 import GetPlayerByQerry from './GetPlayerByQerry';
 import AddPlayer from './AddPlayer';
+import React from 'react';
 
 type IProps = {
   players: IFootballPlayer[];
@@ -26,27 +27,25 @@ const fetchPlayerDelete = async (id: number) => {
 
 
 export const PlayerTable = ({ players }: IProps) => {
-  const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
   const [playerDetails, setPlayerDetails] = useState<IFootballPlayer | null>(null);
 
-  useEffect(() => {
-    if (selectedPlayerId !== null) {
-      const getPlayerDetails = async () => {
-        try {
-          const details = await fetchPlayerDetails(selectedPlayerId);
-          setPlayerDetails(details);
-        } catch (error) {
-          console.error('There was a problem fetching player details:', error);
-        }
-      };
-
-      getPlayerDetails();
-    }
-  }, [selectedPlayerId]);
-
-
   const showPlayerDetails = (id: number) => {
-    setSelectedPlayerId(selectedPlayerId === id ? null : id);
+    if(id === playerDetails?.id){
+      setPlayerDetails(null)
+
+       return
+    }
+
+    const getPlayerDetails = async () => {
+      try {
+        const details = await fetchPlayerDetails(id);
+        setPlayerDetails(details);
+      } catch (error) {
+        console.error('There was a problem fetching player details:', error);
+      }
+    };
+
+    getPlayerDetails();
   };
 
   return (
@@ -63,9 +62,8 @@ export const PlayerTable = ({ players }: IProps) => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {players.map(player => (
-              <>
+              <React.Fragment key={player.id}>
                 <tr
-                  key={player.id}
                   className={`hover:bg-gray-300 cursor-pointer `}
                   onClick={() => showPlayerDetails(player.id)}
                 >
@@ -78,7 +76,7 @@ export const PlayerTable = ({ players }: IProps) => {
                   </td>
 
                 </tr>
-                {selectedPlayerId === player.id && playerDetails && (
+                {playerDetails && playerDetails.id === player.id && (
                   <tr>
                     <td colSpan={3} className="px-6 py-4">
                       <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
@@ -95,7 +93,7 @@ export const PlayerTable = ({ players }: IProps) => {
                   </tr>
                 )}
 
-              </>
+              </React.Fragment>
             ))}
           </tbody>
         </table>

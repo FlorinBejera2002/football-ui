@@ -32,7 +32,7 @@ export default function GetPlayerByQuery() {
 
     return (
         <div>
-            <form className='flex gap-5' onSubmit={() => handleSubmit}>
+            <div className='flex gap-5'>
                 <input
                     placeholder='Team'
                     type="name"
@@ -51,11 +51,12 @@ export default function GetPlayerByQuery() {
 
                 <button
                     className='bg-blue-400 p-3 rounded-md'
-                    type='submit'
+                    onClick={handleSubmit}
                 >
                     Get player by query
                 </button>
-            </form>
+            </div>
+
             {playerDetailsByParams.length > 0 && (
                 <div className='grid grid-cols-3'>
                     {playerDetailsByParams.map(player => (
