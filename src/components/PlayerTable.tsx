@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { IFootballPlayer } from "../types";
+import GetPlayerByQerry from './GetPlayerByQerry';
+import AddPlayer from './AddPlayer';
 
 type IProps = {
   players: IFootballPlayer[];
@@ -13,10 +15,15 @@ const fetchPlayerDetails = async (id: number) => {
   return response.json();
 };
 
+
+
+
+
+
 export const PlayerTable = ({ players }: IProps) => {
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
   const [playerDetails, setPlayerDetails] = useState<IFootballPlayer | null>(null);
-
+ 
   useEffect(() => {
     if (selectedPlayerId !== null) {
       const getPlayerDetails = async () => {
@@ -32,12 +39,13 @@ export const PlayerTable = ({ players }: IProps) => {
     }
   }, [selectedPlayerId]);
 
+
   const showPlayerDetails = (id: number) => {
     setSelectedPlayerId(selectedPlayerId === id ? null : id);
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-300">
+    <div className="flex justify-center items-center flex-col gap-20 min-h-screen ">
       <div className="overflow-x-auto w-full max-w-4xl">
         <table className="min-w-full bg-white shadow-lg rounded-lg">
           <thead>
@@ -75,11 +83,16 @@ export const PlayerTable = ({ players }: IProps) => {
                     </td>
                   </tr>
                 )}
+
               </>
             ))}
           </tbody>
         </table>
       </div>
+
+      <GetPlayerByQerry />
+      <AddPlayer />
+
     </div>
   );
 };
