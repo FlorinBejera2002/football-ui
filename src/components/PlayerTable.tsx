@@ -15,7 +15,12 @@ const fetchPlayerDetails = async (id: number) => {
   return response.json();
 };
 
-
+const fetchPlayerDelete = async (id: number) => {
+  confirm(`Esti sigur ca vrei sa stergi jucatorul cu id-ul ${id}`)
+  await fetch(`http://localhost:3000/players/${id}`, { method: 'DELETE' },)
+    .then(response => response.json())
+    .then(response => console.log(response))
+};
 
 
 
@@ -23,7 +28,7 @@ const fetchPlayerDetails = async (id: number) => {
 export const PlayerTable = ({ players }: IProps) => {
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
   const [playerDetails, setPlayerDetails] = useState<IFootballPlayer | null>(null);
- 
+
   useEffect(() => {
     if (selectedPlayerId !== null) {
       const getPlayerDetails = async () => {
@@ -50,9 +55,10 @@ export const PlayerTable = ({ players }: IProps) => {
         <table className="min-w-full bg-white shadow-lg rounded-lg">
           <thead>
             <tr className="bg-gray-800 text-white">
-              <th className="pl-24 py-3 text-left text-xs font-medium uppercase tracking-wider">Id</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Team</th>
+              <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Id</th>
+              <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Team</th>
+              <th className="px-6 py-4 text-center text-xs font-medium uppercase tracking-wider"></th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -60,12 +66,17 @@ export const PlayerTable = ({ players }: IProps) => {
               <>
                 <tr
                   key={player.id}
-                  className={`hover:bg-gray-300 cursor-pointer ${selectedPlayerId === player.id ? 'bg-gray-500' : ''}`}
+                  className={`hover:bg-gray-300 cursor-pointer `}
                   onClick={() => showPlayerDetails(player.id)}
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center">{player.id}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{player.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{player.team}</td>
+                  <td className="px-6 py-4 text-center text-sm font-medium">
+                    <button className='px-4 py-2 bg-red-500 text-white rounded' onClick={() => fetchPlayerDelete(player.id)}>Delete</button>
+                    <button className='px-4 py-2 bg-blue-500 text-white rounded ml-2'>Edit</button>
+                  </td>
+
                 </tr>
                 {selectedPlayerId === player.id && playerDetails && (
                   <tr>
