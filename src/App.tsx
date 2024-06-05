@@ -1,22 +1,24 @@
-import { useEffect, useState } from "react";
-import { PlayerTable } from "./components/PlayerTable";
-import { IFootballPlayer } from "./types";
-import { getPlayers } from "./api/football-api";
+import { useEffect, useState } from 'react'
+
+import { IFootballPlayer } from './types'
+import { PlayerTable } from './components/PlayerTable'
+import { getPlayers } from './api/football-api'
 
 export const App = () => {
-  const [players, setPlayers] = useState<IFootballPlayer[]>([]);
+  const [players, setPlayers] = useState<IFootballPlayer[]>([])
 
   useEffect(() => {
     const fetchPlayers = async () => {
       if (!players.length) {
         // Acest cod se execută o dată când se încarcă componenta
-        const response = await getPlayers();
-        setPlayers(response);
-      }
-    };
+        const response = await getPlayers()
 
-    fetchPlayers();
-  }, [players.length]);
+        setPlayers(response)
+      }
+    }
+
+    fetchPlayers()
+  }, [players.length])
 
   return (
     <div className="container p-11">
@@ -24,5 +26,5 @@ export const App = () => {
 
       <PlayerTable players={players} />
     </div>
-  );
-};
+  )
+}

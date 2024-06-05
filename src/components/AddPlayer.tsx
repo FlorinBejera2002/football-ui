@@ -1,78 +1,66 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
-const fetchNewPlayer = async (addName: string, addNumber: string, addTeam: string, addAge: string, addPosition: string) => {
+import { fetchNewPlayer } from '../api/football-api'
 
-    const response = await fetch("http://localhost:3000/players", {
-        method: "POST",
-        body: JSON.stringify({
-            name: addName,
-            number: addNumber,
-            team: addTeam,
-            age: addAge,
-            position: addPosition
-        }),
-        headers: {
-            "Content-type": "application/json; charset=UTF-8"
-        }
-    });
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    return response.json();
-}
+export const AddPlayer = () => {
+  const [addName, setAddName] = useState('')
+  const [addNumber, setAddNumber] = useState('')
+  const [addTeam, setAddTeam] = useState('')
+  const [addAge, setAddAge] = useState('')
+  const [addPosition, setAddPosition] = useState('')
 
-export default function AddPlayer() {
-    const [addName, setAddName] = useState("");
-    const [addNumber, setAddNumber] = useState("");
-    const [addTeam, setAddTeam] = useState("");
-    const [addAge, setAddAge] = useState("");
-    const [addPosition, setAddPosition] = useState("");
+  return (
+    <div>
+      <div className="w-[40em] flex justify-center items-center flex-col gap-5 mt-20">
+        <input
+          className="border-2 border-gray-700 p-3 rounded-md w-[25em] "
+          onChange={(e) => setAddName(e.target.value)}
+          placeholder="Name"
+          type="text"
+          value={addName}
+        />
 
-    return (
-        <div>
-            <form className='grid grid-cols-3 gap-5 mt-20 mb-44' onSubmit={() => fetchNewPlayer(addName, addNumber, addAge, addTeam, addPosition)}>
-                <input
-                    placeholder='Name'
-                    type="text"
-                    value={addName}
-                    onChange={(e) => setAddName(e.target.value)}
-                    className='border-2 border-black p-3 rounded-md' />
+        <input
+          className="border-2 border-gray-700 p-3 rounded-md w-[25em] "
+          onChange={(e) => setAddNumber(e.target.value)}
+          placeholder="Number"
+          type="number"
+          value={addNumber}
+        />
 
-                <input
-                    placeholder='Number'
-                    type="number"
-                    value={addNumber}
-                    onChange={(e) => setAddNumber(e.target.value)}
-                    className='border-2 border-black p-3 rounded-md' />
+        <input
+          className="border-2 border-gray-700 p-3 rounded-md w-[25em] "
+          onChange={(e) => setAddTeam(e.target.value)}
+          placeholder="Team"
+          type="text"
+          value={addTeam}
+        />
 
-                <input
-                    placeholder='Team'
-                    type="text"
-                    value={addTeam}
-                    onChange={(e) => setAddTeam(e.target.value)}
-                    className='border-2 border-black p-3 rounded-md' />
+        <input
+          className="border-2 border-gray-700 p-3 rounded-md w-[25em] "
+          onChange={(e) => setAddAge(e.target.value)}
+          placeholder="Age"
+          type="number"
+          value={addAge}
+        />
 
-                <input
-                    placeholder='Age'
-                    type="number"
-                    value={addAge}
-                    onChange={(e) => setAddAge(e.target.value)}
-                    className='border-2 border-black p-3 rounded-md' />
+        <input
+          className="border-2 border-gray-700 p-3 rounded-md w-[25em] "
+          onChange={(e) => setAddPosition(e.target.value)}
+          placeholder="Position"
+          type="text"
+          value={addPosition}
+        />
 
-                <input
-                    placeholder='Position'
-                    type="text"
-                    value={addPosition}
-                    onChange={(e) => setAddPosition(e.target.value)}
-                    className='border-2 border-black p-3 rounded-md' />
-
-                <button
-                    className='bg-blue-400 p-3 rounded-md'
-                    type='submit'
-                >
-                    Add new player
-                </button>
-            </form>
-        </div>
-    );
+        <button
+          className="bg-blue-500 p-3 rounded-md"
+          onClick={() =>
+            fetchNewPlayer(addName, addNumber, addTeam, addAge, addPosition)
+          }
+        >
+          Add new player
+        </button>
+      </div>
+    </div>
+  )
 }

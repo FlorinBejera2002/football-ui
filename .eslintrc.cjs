@@ -56,7 +56,7 @@ module.exports = {
     'jsx-a11y/click-events-have-key-events': 'off',
     'jsx-a11y/no-onchange': 'error',
     'jsx-a11y/no-static-element-interactions': 'error',
-    'no-console': 'error',
+    'no-console': 'off',
     'no-undef': 'error',
     'no-unused-vars': 'error',
     'padding-line-between-statements': [

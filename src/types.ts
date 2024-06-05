@@ -1,15 +1,15 @@
 export enum IPosition {
-  Goalkeeper = "Goalkeeper",
-  Defender = "Defender",
-  Midfielder = "Midfielder",
-  Forward = "Forward"
+  Defender = 'Defender',
+  Forward = 'Forward',
+  Goalkeeper = 'Goalkeeper',
+  Midfielder = 'Midfielder'
 }
 
 export type IFootballPlayer = {
-  id: number,
-  name: string,
-  number: number,
-  team: string,
-  age: number,
-  position: IPosition,
+  age: number
+  id: number
+  name: string
+  number: number
+  position: IPosition
+  team: string
 }
