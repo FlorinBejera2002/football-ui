@@ -1,7 +1,11 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 import { IFootballPlayer } from './types'
-import { PlayerTable } from './components/PlayerTable'
+import { PlayerTable } from './pages/PlayerTable'
+import { Layout } from './pages/Layout'
+import { GetPlayerByQuery } from './pages/GetPlayerByQerry'
+import { AddPlayer } from './pages/AddPlayer'
 import { getPlayers } from './api/football-api'
 
 export const App = () => {
@@ -21,10 +25,16 @@ export const App = () => {
   }, [players.length])
 
   return (
-    <div className="container p-11">
-      <div className="font-bold text-3xl mb-11">football-ui</div>
-
-      <PlayerTable players={players} />
+    <div className="container ">
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />} path="/">
+            <Route element={<PlayerTable players={players} />} index={true} />
+            <Route element={<AddPlayer />} path="newplayer" />
+            <Route element={<GetPlayerByQuery />} path="querryparams" />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   )
 }

@@ -1,15 +1,12 @@
 import { useState } from 'react'
 import React from 'react'
 
-import { GetPlayerByQuery } from './GetPlayerByQerry'
-import { AddPlayer } from './AddPlayer'
 import { IFootballPlayer } from '../types'
 import {
   deletePlayer,
   fetchPlayerDetails,
   updatePlayer
 } from '../api/football-api'
-
 type IProps = {
   players: IFootballPlayer[]
 }
@@ -77,8 +74,8 @@ export const PlayerTable = ({ players }: IProps) => {
   }
 
   return (
-    <div className="flex ml-20 flex-col gap-20 min-h-screen">
-      <div className="w-2/3 flex">
+    <div className="flex ml-20 flex-col gap-20 min-h-screen items-center mt-20">
+      <div className="w-3/4 flex">
         <table className="min-w-full bg-white shadow-lg rounded-lg">
           <thead>
             <tr className="bg-gray-800 text-white">
@@ -101,13 +98,13 @@ export const PlayerTable = ({ players }: IProps) => {
                   className="hover:bg-gray-300 cursor-pointer"
                   onClick={() => showPlayerDetails(player.id)}
                 >
-                  <td className="px-6 whitespace-nowrap text-sm font-medium text-gray-900 text-center">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center">
                     {player.id}
                   </td>
-                  <td className="px-6 whitespace-nowrap text-sm text-gray-500 text-center">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                     {player.name}
                   </td>
-                  <td className="px-6 whitespace-nowrap text-sm text-gray-500 text-center">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                     {player.team}
                   </td>
                   <td className="text-center text-sm font-medium">
@@ -212,10 +209,7 @@ export const PlayerTable = ({ players }: IProps) => {
             ))}
           </tbody>
         </table>
-        <AddPlayer />
       </div>
-
-      <GetPlayerByQuery />
     </div>
   )
 }
