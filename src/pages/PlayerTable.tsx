@@ -21,7 +21,7 @@ export const PlayerTable = ({ players }: IProps) => {
   const [editAge, setEditAge] = useState(0)
   const [editPosition, setEditPosition] = useState('')
   const [filterName, setFilterName] = useState('')
-  const [filterTeam, setFilterTeam] = useState('')
+  const [filterPosition, setFilterPosition] = useState('All position')
   const emailInputRef = useRef<HTMLInputElement>(null)
 
   const showPlayerDetails = async (id: number) => {
@@ -61,31 +61,37 @@ export const PlayerTable = ({ players }: IProps) => {
     setEditPosition('')
   }
 
-  const filteredPlayers = players.filter(
-    (item) =>
-      item.name.toLowerCase().includes(filterName.toLowerCase()) &&
-      item.team.toLowerCase().includes(filterTeam.toLowerCase())
-  )
+  const filteredPlayers = players.filter((item) => {
+    const nameFiltred = item.name
+      .toLowerCase()
+      .includes(filterName.toLowerCase())
+    const positionFilterd =
+      filterPosition === 'All position' || item.position === filterPosition
+
+    return nameFiltred && positionFilterd
+  })
 
   return (
-    <div className="flex ml-20 flex-col gap-20 min-h-screen items-center mt-20">
-      <div className="mb-4 flex gap-4">
-        <input
-          className="p-2 border rounded-md"
+    <div className="flex flex-col items-center mt-20">
+      <div className="flex gap-20 mb-10">
+        <TextInput
           onChange={(e) => setFilterName(e.target.value)}
           placeholder="Filter by name"
-          type="text"
+          type="name"
           value={filterName}
         />
-        <input
-          className="p-2 border rounded-md"
-          onChange={(e) => setFilterTeam(e.target.value)}
-          placeholder="Filter by team"
-          type="text"
-          value={filterTeam}
-        />
+        <Select
+          onChange={(e) => setFilterPosition(e.target.value)}
+          value={filterPosition}
+        >
+          <option>All position</option>
+          <option>Forward</option>
+          <option>Midfielder</option>
+          <option>Defender</option>
+          <option>Goalkeeper</option>
+        </Select>
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto w-[60em]">
         <Table className="min-w-full bg-white shadow-lg rounded-lg">
           <Table.Head>
             <Table.HeadCell>Id</Table.HeadCell>
@@ -93,6 +99,9 @@ export const PlayerTable = ({ players }: IProps) => {
             <Table.HeadCell>Team</Table.HeadCell>
             <Table.HeadCell>
               <span className="sr-only">Edit</span>
+            </Table.HeadCell>
+            <Table.HeadCell>
+              <span className="sr-only">Delete</span>
             </Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
