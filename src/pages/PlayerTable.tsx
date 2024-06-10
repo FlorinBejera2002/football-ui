@@ -22,7 +22,6 @@ export const PlayerTable = ({ players }: IProps) => {
   const [editPosition, setEditPosition] = useState('')
   const [filterName, setFilterName] = useState('')
   const [filterTeam, setFilterTeam] = useState('')
-  const [openModal, setOpenModal] = useState(true)
   const emailInputRef = useRef<HTMLInputElement>(null)
 
   const showPlayerDetails = async (id: number) => {
