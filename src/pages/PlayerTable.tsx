@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import React from 'react'
 
 import { IFootballPlayer } from '../types'
 import { deletePlayer, updatePlayer } from '../api/football-api'
+
+import { Button, Label, Modal, Select, Table, TextInput } from 'flowbite-react'
 
 type IProps = {
   players: IFootballPlayer[]
@@ -20,6 +22,8 @@ export const PlayerTable = ({ players }: IProps) => {
   const [editPosition, setEditPosition] = useState('')
   const [filterName, setFilterName] = useState('')
   const [filterTeam, setFilterTeam] = useState('')
+  const [openModal, setOpenModal] = useState(true)
+  const emailInputRef = useRef<HTMLInputElement>(null)
 
   const showPlayerDetails = async (id: number) => {
     navigate(`/${id}`)
@@ -82,50 +86,31 @@ export const PlayerTable = ({ players }: IProps) => {
           value={filterTeam}
         />
       </div>
-      <div className="w-3/4 flex">
-        <table className="min-w-full bg-white shadow-lg rounded-lg">
-          <thead>
-            <tr className="bg-gray-800 text-white">
-              <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
-                Id
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
-                Team
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider"></th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+      <div className="overflow-x-auto">
+        <Table className="min-w-full bg-white shadow-lg rounded-lg">
+          <Table.Head>
+            <Table.HeadCell>Id</Table.HeadCell>
+            <Table.HeadCell>Name</Table.HeadCell>
+            <Table.HeadCell>Team</Table.HeadCell>
+            <Table.HeadCell>
+              <span className="sr-only">Edit</span>
+            </Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
             {filteredPlayers.map((player) => (
               <React.Fragment key={player.id}>
-                <tr
-                  className="hover:bg-gray-300 cursor-pointer"
+                <Table.Row
+                  className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
                   onClick={() => showPlayerDetails(player.id)}
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center">
+                  <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                     {player.id}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                    {player.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                    {player.team}
-                  </td>
-                  <td className="text-center text-sm font-medium">
+                  </Table.Cell>
+                  <Table.Cell>{player.name}</Table.Cell>
+                  <Table.Cell>{player.team}</Table.Cell>
+                  <Table.Cell>
                     <button
-                      className="px-5 py-2 bg-red-500 text-white rounded z-10"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        deletePlayer(player.id)
-                      }}
-                    >
-                      Delete
-                    </button>
-                    <button
-                      className="px-5 py-2 bg-blue-500 text-white rounded z-10 ml-5"
+                      className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 z-10"
                       onClick={(e) => {
                         e.stopPropagation()
                         startEditing(player)
@@ -133,80 +118,94 @@ export const PlayerTable = ({ players }: IProps) => {
                     >
                       Edit
                     </button>
-                  </td>
-                </tr>
-                {editPlayerId === player.id && (
-                  <tr>
-                    <td className="px-6 py-4" colSpan={4}>
-                      <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="flex gap-2 items-center font-bold px-5 py-2 bg-gray-300 rounded-md">
-                            Name:
-                            <input
-                              className="block w-full mt-1 p-2 border rounded-md text-gray-700 font-normal bg-gray-200"
-                              onChange={(e) => setEditName(e.target.value)}
-                              value={editName}
-                            />
-                          </div>
-                          <div className="flex gap-2 items-center font-bold px-5 py-2 bg-gray-300 rounded-md">
-                            Team:
-                            <input
-                              className="block w-full mt-1 p-2 border rounded-md text-gray-700 font-normal bg-gray-200"
-                              onChange={(e) => setEditTeam(e.target.value)}
-                              value={editTeam}
-                            />
-                          </div>
-                          <div className="flex gap-2 items-center font-bold px-5 py-2 bg-gray-300 rounded-md">
-                            Number:
-                            <input
-                              className="block w-full mt-1 p-2 border rounded-md text-gray-700 font-normal bg-gray-200"
-                              onChange={(e) =>
-                                setEditNumber(Number(e.target.value))
-                              }
-                              value={editNumber}
-                            />
-                          </div>
-                          <div className="flex gap-2 items-center font-bold px-5 py-2 bg-gray-300 rounded-md">
-                            Age:
-                            <input
-                              className="block w-full mt-1 p-2 border rounded-md text-gray-700 font-normal bg-gray-200"
-                              onChange={(e) =>
-                                setEditAge(Number(e.target.value))
-                              }
-                              value={editAge}
-                            />
-                          </div>
-                          <div className="flex gap-2 items-center font-bold px-5 py-2 bg-gray-300 rounded-md">
-                            Position:
-                            <input
-                              className="block w-full mt-1 p-2 border rounded-md text-gray-700 font-normal bg-gray-200"
-                              onChange={(e) => setEditPosition(e.target.value)}
-                              value={editPosition}
-                            />
-                          </div>
-                          <div className="flex justify-end gap-5 items-center">
-                            <button
-                              className="px-5 py-2 bg-green-500 text-white rounded mt-5 z-10"
-                              onClick={() => handleSave(player.id)}
-                            >
-                              Save
-                            </button>
-                            <button
-                              className="px-5 py-2 bg-gray-500 text-white rounded mt-5 z-10"
-                              onClick={handleClose}
-                            >
-                              Close
-                            </button>
-                          </div>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <button
+                      className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        deletePlayer(player.id)
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </Table.Cell>
+                </Table.Row>
+                <Modal
+                  initialFocus={emailInputRef}
+                  onClose={handleClose}
+                  show={editPlayerId === player.id}
+                  size="lg"
+                >
+                  <Modal.Header>Edit Player</Modal.Header>
+                  <Modal.Body>
+                    <div className="space-y-6">
+                      <div>
+                        <div className="mb-2 block">
+                          <Label htmlFor="name" value="Name" />
                         </div>
+                        <TextInput
+                          onChange={(e) => setEditName(e.target.value)}
+                          value={editName}
+                        />
                       </div>
-                    </td>
-                  </tr>
-                )}
+                      <div>
+                        <div className="mb-2 block">
+                          <Label value="Team" />
+                        </div>
+                        <TextInput
+                          onChange={(e) => setEditTeam(e.target.value)}
+                          value={editTeam}
+                        />
+                      </div>
+                      <div>
+                        <div className="mb-2 block">
+                          <Label value="Number" />
+                        </div>
+                        <TextInput
+                          onChange={(e) =>
+                            setEditNumber(Number(e.target.value))
+                          }
+                          value={editNumber}
+                        />
+                      </div>
+                      <div>
+                        <div className="mb-2 block">
+                          <Label value="Number" />
+                        </div>
+                        <TextInput
+                          onChange={(e) => setEditAge(Number(e.target.value))}
+                          value={editAge}
+                        />
+                      </div>
+                      <div className="max-w-md">
+                        <div className="mb-2 block">
+                          <Label value="Position" />
+                        </div>
+                        <Select
+                          onChange={(e) => setEditPosition(e.target.value)}
+                          value={editPosition}
+                        >
+                          <option>{player.position}</option>
+                          <option>Forward</option>
+                          <option>Midfielder</option>
+                          <option>Defender</option>
+                          <option>Goalkeeper</option>
+                        </Select>
+                      </div>
+                      <Button
+                        color="success"
+                        onClick={() => handleSave(player.id)}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </Modal.Body>
+                </Modal>
               </React.Fragment>
             ))}
-          </tbody>
-        </table>
+          </Table.Body>
+        </Table>
       </div>
     </div>
   )
