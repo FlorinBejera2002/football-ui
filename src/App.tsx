@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { IFootballPlayer } from './types'
 import { PlayerTable } from './pages/PlayerTable'
+import { PlayerDetail } from './pages/PlayerDetails'
 import { Layout } from './pages/Layout'
 import { GetPlayerByQuery } from './pages/GetPlayerByQerry'
 import { AddPlayer } from './pages/AddPlayer'
@@ -32,6 +33,7 @@ export const App = () => {
             <Route element={<PlayerTable players={players} />} index={true} />
             <Route element={<AddPlayer />} path="newplayer" />
             <Route element={<GetPlayerByQuery />} path="querryparams" />
+            <Route element={<PlayerDetail />} path="/:playerId" />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -1,42 +1,28 @@
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import React from 'react'
 
 import { IFootballPlayer } from '../types'
-import {
-  deletePlayer,
-  fetchPlayerDetails,
-  updatePlayer
-} from '../api/football-api'
+import { deletePlayer, updatePlayer } from '../api/football-api'
+
 type IProps = {
   players: IFootballPlayer[]
 }
 
 export const PlayerTable = ({ players }: IProps) => {
-  const [playerDetails, setPlayerDetails] = useState<IFootballPlayer | null>(
-    null
-  )
+  const navigate = useNavigate()
+
   const [editPlayerId, setEditPlayerId] = useState<null | number>(null)
   const [editName, setEditName] = useState('')
   const [editNumber, setEditNumber] = useState(0)
   const [editTeam, setEditTeam] = useState('')
   const [editAge, setEditAge] = useState(0)
   const [editPosition, setEditPosition] = useState('')
+  const [filterName, setFilterName] = useState('')
+  const [filterTeam, setFilterTeam] = useState('')
 
   const showPlayerDetails = async (id: number) => {
-    if (id === playerDetails?.id) {
-      setPlayerDetails(null)
-
-      return
-    }
-
-    //get player details
-    try {
-      const details = await fetchPlayerDetails(id)
-
-      setPlayerDetails(details)
-    } catch (error) {
-      console.error('There was a problem fetching player details:', error)
-    }
+    navigate(`/${id}`)
   }
 
   const startEditing = (player: IFootballPlayer) => {
@@ -58,7 +44,6 @@ export const PlayerTable = ({ players }: IProps) => {
         team: editTeam
       })
       setEditPlayerId(null)
-      setPlayerDetails(null)
     } catch (error) {
       console.error('There was a problem updating the player:', error)
     }
@@ -73,8 +58,30 @@ export const PlayerTable = ({ players }: IProps) => {
     setEditPosition('')
   }
 
+  const filteredPlayers = players.filter(
+    (item) =>
+      item.name.toLowerCase().includes(filterName.toLowerCase()) &&
+      item.team.toLowerCase().includes(filterTeam.toLowerCase())
+  )
+
   return (
     <div className="flex ml-20 flex-col gap-20 min-h-screen items-center mt-20">
+      <div className="mb-4 flex gap-4">
+        <input
+          className="p-2 border rounded-md"
+          onChange={(e) => setFilterName(e.target.value)}
+          placeholder="Filter by name"
+          type="text"
+          value={filterName}
+        />
+        <input
+          className="p-2 border rounded-md"
+          onChange={(e) => setFilterTeam(e.target.value)}
+          placeholder="Filter by team"
+          type="text"
+          value={filterTeam}
+        />
+      </div>
       <div className="w-3/4 flex">
         <table className="min-w-full bg-white shadow-lg rounded-lg">
           <thead>
@@ -92,7 +99,7 @@ export const PlayerTable = ({ players }: IProps) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {players.map((player) => (
+            {filteredPlayers.map((player) => (
               <React.Fragment key={player.id}>
                 <tr
                   className="hover:bg-gray-300 cursor-pointer"
@@ -110,13 +117,19 @@ export const PlayerTable = ({ players }: IProps) => {
                   <td className="text-center text-sm font-medium">
                     <button
                       className="px-5 py-2 bg-red-500 text-white rounded z-10"
-                      onClick={() => deletePlayer(player.id)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        deletePlayer(player.id)
+                      }}
                     >
                       Delete
                     </button>
                     <button
                       className="px-5 py-2 bg-blue-500 text-white rounded z-10 ml-5"
-                      onClick={() => startEditing(player)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        startEditing(player)
+                      }}
                     >
                       Edit
                     </button>
@@ -185,21 +198,6 @@ export const PlayerTable = ({ players }: IProps) => {
                               Close
                             </button>
                           </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {playerDetails && playerDetails.id === player.id && (
-                  <tr>
-                    <td className="px-6 py-4" colSpan={3}>
-                      <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
-                        <div className="grid grid-cols-2 gap-4">
-                          {Object.entries(player).map(([key, value]) => (
-                            <div className="text-black" key={key}>
-                              <strong>{key}:</strong> {value}
-                            </div>
-                          ))}
                         </div>
                       </div>
                     </td>
