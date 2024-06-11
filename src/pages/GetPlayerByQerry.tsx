@@ -1,7 +1,7 @@
 import { MouseEvent, useState } from 'react'
 
 import { IFootballPlayer } from '../types'
-import { fetchPlayerDetailsByParams } from '../api/football-api'
+import { getDetailsByParams } from '../api/football-api'
 
 export const GetPlayerByQuery = () => {
   const [teamName, setTeamName] = useState('')
@@ -14,7 +14,7 @@ export const GetPlayerByQuery = () => {
     e.preventDefault()
 
     try {
-      const details = await fetchPlayerDetailsByParams(teamName, positionPlayer)
+      const details = await getDetailsByParams(teamName, positionPlayer)
 
       setPlayerDetailsByParams(details)
     } catch (error) {

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { fetchNewPlayer } from '../api/football-api'
+import { addPlayer } from '../api/football-api'
 
 import { Button, Label, Select, TextInput } from 'flowbite-react'
 
@@ -18,23 +18,13 @@ export const AddPlayer = () => {
           <div className="mb-2 block">
             <Label htmlFor="name" value="Name" />
           </div>
-          <TextInput
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Name"
-            type="text"
-            value={name}
-          />
+          <TextInput onChange={(e) => setName(e.target.value)} value={name} />
         </div>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="name" value="Name" />
+            <Label htmlFor="team" value="Team" />
           </div>
-          <TextInput
-            onChange={(e) => setTeam(e.target.value)}
-            placeholder="Name"
-            type="text"
-            value={name}
-          />
+          <TextInput onChange={(e) => setTeam(e.target.value)} value={team} />
         </div>
         <div>
           <div className="mb-2 block">
@@ -47,7 +37,7 @@ export const AddPlayer = () => {
         </div>
         <div>
           <div className="mb-2 block">
-            <Label value="Number" />
+            <Label value="Age" />
           </div>
           <TextInput
             onChange={(e) => setAge(Number(e.target.value))}
@@ -70,7 +60,7 @@ export const AddPlayer = () => {
         </div>
         <Button
           color="blue"
-          onClick={() => fetchNewPlayer(name, number, team, age, position)}
+          onClick={() => addPlayer(name, number, team, age, position)}
         >
           Add new player
         </Button>

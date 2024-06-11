@@ -179,7 +179,7 @@ export const PlayerTable = ({ players }: IProps) => {
                       </div>
                       <div>
                         <div className="mb-2 block">
-                          <Label value="Number" />
+                          <Label value="Age" />
                         </div>
                         <TextInput
                           onChange={(e) => setEditAge(Number(e.target.value))}

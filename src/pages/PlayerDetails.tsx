@@ -10,14 +10,12 @@ export const PlayerDetail = () => {
 
   useEffect(() => {
     const getPlayerDetails = async () => {
-      if (playerId) {
-        try {
-          const details = await fetchPlayerDetails(Number(playerId))
+      try {
+        const details = await fetchPlayerDetails(Number(playerId))
 
-          setPlayer(details)
-        } catch (error) {
-          console.error('There was a problem fetching player details:', error)
-        }
+        setPlayer(details)
+      } catch (error) {
+        console.error('There was a problem fetching player details:', error)
       }
     }
 
