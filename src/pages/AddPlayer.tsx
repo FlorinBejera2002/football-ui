@@ -12,7 +12,7 @@ export const AddPlayer = () => {
   const [position, setPosition] = useState('')
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center  mt-20">
       <div className="space-y-6 w-96">
         <div>
           <div className="mb-2 block">
