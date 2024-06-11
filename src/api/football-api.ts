@@ -60,9 +60,9 @@ export const updatePlayer = async (
 
 export const fetchNewPlayer = async (
   addName: string,
-  addNumber: string,
+  addNumber: number,
   addTeam: string,
-  addAge: string,
+  addAge: number,
   addPosition: string
 ) => {
   const response = await fetch(`${BASE_URL}/players`, {

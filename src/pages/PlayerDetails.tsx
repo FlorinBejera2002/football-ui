@@ -29,26 +29,26 @@ export const PlayerDetail = () => {
   }
 
   return (
-    <div className="flex flex-col items-center mt-10">
-      <h1 className="text-3xl font-bold mb-5">{player.name}</h1>
-      <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
+    <div className="container w-full flex flex-col justify-center items-center mt-10">
+      <h1 className="text-5xl font-bold mb-3">{player.name}</h1>
+      <div className="bg-gray-50 p-20 rounded-lg shadow-inner">
+        <div className="grid gap-4 text-2xl">
+          <div className="text-gray-600">
             <strong>Id:</strong> {player.id}
           </div>
-          <div>
+          <div className="text-gray-600">
             <strong>Name:</strong> {player.name}
           </div>
-          <div>
+          <div className="text-gray-600">
             <strong>Team:</strong> {player.team}
           </div>
-          <div>
+          <div className="text-gray-600">
             <strong>Number:</strong> {player.number}
           </div>
-          <div>
+          <div className="text-gray-600">
             <strong>Age:</strong> {player.age}
           </div>
-          <div>
+          <div className="text-gray-600">
             <strong>Position:</strong> {player.position}
           </div>
         </div>
