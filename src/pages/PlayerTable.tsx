@@ -60,12 +60,12 @@ export const PlayerTable = ({ players }: IProps) => {
     }
   }
 
-  const handleDeleteSelected = async () => {
-    for (const playerId of selectedPlayers) {
-      await deletePlayer(playerId)
+  const handleDeleteSelected = () => {
+    try {
+      selectedPlayers.map(async (playerId) => await deletePlayer(playerId))
+    } catch (error) {
+      console.error('There was a problem deleting the selected players:', error)
     }
-    setSelectedPlayers([])
-    setSelectAll(false)
   }
 
   const filteredPlayers = players.filter(
@@ -100,7 +100,7 @@ export const PlayerTable = ({ players }: IProps) => {
         </div>
       </div>
 
-      <div className="overflow-x-auto w-[60em]">
+      <div className="overflow-x-auto">
         <Table className="min-w-full bg-white shadow-lg rounded-lg">
           <Table.Head>
             <Table.HeadCell>
@@ -129,11 +129,13 @@ export const PlayerTable = ({ players }: IProps) => {
           <Table.Body className="divide-y">
             {filteredPlayers.map((player) => (
               <React.Fragment key={player.id}>
-                <Table.Row
-                  className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
-                  onClick={() => showPlayerDetails(player.id)}
-                >
-                  <Table.Cell>
+                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 relative">
+                  <Table.Cell
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleSelectPlayer(player.id)
+                    }}
+                  >
                     <Checkbox
                       checked={selectedPlayers.includes(player.id)}
                       className="z-20 cursor-pointer"
@@ -146,8 +148,12 @@ export const PlayerTable = ({ players }: IProps) => {
                   <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                     {player.id}
                   </Table.Cell>
-                  <Table.Cell>{player.name}</Table.Cell>
-                  <Table.Cell>{player.team}</Table.Cell>
+                  <Table.Cell onClick={() => showPlayerDetails(player.id)}>
+                    {player.name}
+                  </Table.Cell>
+                  <Table.Cell onClick={() => showPlayerDetails(player.id)}>
+                    {player.team}
+                  </Table.Cell>
                   <Table.Cell>
                     <button
                       className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 z-10"
