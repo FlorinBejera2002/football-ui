@@ -1,5 +1,7 @@
 const BASE_URL = 'http://localhost:3000'
 
+import { IFootballPlayer } from '../types'
+
 export const getPlayers = async () => {
   const response = await fetch(`${BASE_URL}/players`)
     .then((response) => response.json())
@@ -18,7 +20,6 @@ export const fetchPlayerDetails = async (id: number) => {
 }
 
 export const deletePlayer = async (id: number) => {
-  confirm(`Esti sigur ca vrei sa stergi jucatorul cu id-ul ${id}`)
   await fetch(`${BASE_URL}/players/${id}`, { method: 'DELETE' })
     .then((response) => response.json())
     .then((response) => console.log(response))
@@ -26,18 +27,9 @@ export const deletePlayer = async (id: number) => {
   location.reload()
 }
 
-export const updatePlayer = async (
-  id: number,
-  updatedData: {
-    age: number
-    name: string
-    number: number
-    position: string
-    team: string
-  }
-) => {
+export const updatePlayer = async (id: number, player: IFootballPlayer) => {
   await fetch(`${BASE_URL}/players/${id}`, {
-    body: JSON.stringify(updatedData),
+    body: JSON.stringify(player),
     headers: {
       'Content-Type': 'application/json'
     },
@@ -49,21 +41,10 @@ export const updatePlayer = async (
   location.reload()
 }
 
-export const addPlayer = async (
-  addName: string,
-  addNumber: number,
-  addTeam: string,
-  addAge: number,
-  addPosition: string
-) => {
+export const addPlayer = async (player: IFootballPlayer) => {
+  console.log('Add player:' + player)
   await fetch(`${BASE_URL}/players`, {
-    body: JSON.stringify({
-      age: addAge,
-      name: addName,
-      number: addNumber,
-      position: addPosition,
-      team: addTeam
-    }),
+    body: JSON.stringify(player),
     headers: {
       'Content-type': 'application/json; charset=UTF-8'
     },
@@ -72,9 +53,7 @@ export const addPlayer = async (
     .then((response) => response.json())
     .then((response) => console.log(response))
     .catch((error) => console.error('Failed to add new player:', error))
-  location.reload()
 }
-
 export const getDetailsByParams = async (team: string, position: string) => {
   const query = new URLSearchParams()
 

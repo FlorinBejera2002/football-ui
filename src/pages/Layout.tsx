@@ -8,7 +8,7 @@ export const Layout = () => {
     <div className="container">
       <Navbar className="bg-gray-200 w-screen">
         <Navbar.Brand>
-          <IoIosFootball color="blue" size={40} />
+          <IoIosFootball color="black" size={35} />
           <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
             Football-app
           </span>

@@ -1,11 +1,20 @@
 import { useNavigate } from 'react-router-dom'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import React from 'react'
 
-import { IFootballPlayer } from '../types'
+import { IFootballPlayer, IPosition } from '../types'
+import { FormInput } from '../components/FormInput'
 import { deletePlayer, updatePlayer } from '../api/football-api'
 
-import { Button, Label, Modal, Select, Table, TextInput } from 'flowbite-react'
+import { HiOutlineExclamationCircle } from 'react-icons/hi'
+import {
+  Button,
+  Checkbox,
+  Modal,
+  Select,
+  Table,
+  TextInput
+} from 'flowbite-react'
 
 type IProps = {
   players: IFootballPlayer[]
@@ -15,61 +24,56 @@ export const PlayerTable = ({ players }: IProps) => {
   const navigate = useNavigate()
 
   const [editPlayerId, setEditPlayerId] = useState<null | number>(null)
-  const [editName, setEditName] = useState('')
-  const [editNumber, setEditNumber] = useState(0)
-  const [editTeam, setEditTeam] = useState('')
-  const [editAge, setEditAge] = useState(0)
-  const [editPosition, setEditPosition] = useState('')
   const [filterName, setFilterName] = useState('')
-  const [filterPosition, setFilterPosition] = useState('All position')
-  const emailInputRef = useRef<HTMLInputElement>(null)
+  const [filterPosition, setFilterPosition] = useState('')
+  const [deletePlayerId, setDeletePlayerId] = useState<null | number>(null)
+  const [selectedPlayers, setSelectedPlayers] = useState<number[]>([])
+  const [selectAll, setSelectAll] = useState(false)
 
   const showPlayerDetails = async (id: number) => {
     navigate(`/${id}`)
   }
 
-  const startEditing = (player: IFootballPlayer) => {
-    setEditPlayerId(player.id)
-    setEditName(player.name)
-    setEditNumber(player.number)
-    setEditTeam(player.team)
-    setEditAge(player.age)
-    setEditPosition(player.position)
-  }
-
-  const handleSave = async (id: number) => {
+  const handleSave = async (id: number, updatedPlayer: IFootballPlayer) => {
     try {
-      await updatePlayer(id, {
-        age: editAge,
-        name: editName,
-        number: editNumber,
-        position: editPosition,
-        team: editTeam
-      })
+      await updatePlayer(id, updatedPlayer)
       setEditPlayerId(null)
     } catch (error) {
       console.error('There was a problem updating the player:', error)
     }
   }
 
-  const handleClose = () => {
-    setEditPlayerId(null)
-    setEditName('')
-    setEditNumber(0)
-    setEditTeam('')
-    setEditAge(0)
-    setEditPosition('')
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedPlayers([])
+    } else {
+      setSelectedPlayers(players.map((player) => player.id))
+    }
+    setSelectAll(!selectAll)
   }
 
-  const filteredPlayers = players.filter((item) => {
-    const nameFiltred = item.name
-      .toLowerCase()
-      .includes(filterName.toLowerCase())
-    const positionFilterd =
-      filterPosition === 'All position' || item.position === filterPosition
+  const handleSelectPlayer = (id: number) => {
+    if (selectedPlayers.includes(id)) {
+      setSelectedPlayers(selectedPlayers.filter((playerId) => playerId !== id))
+    } else {
+      setSelectedPlayers([...selectedPlayers, id])
+    }
+  }
 
-    return nameFiltred && positionFilterd
-  })
+  const handleDeleteSelected = async () => {
+    for (const playerId of selectedPlayers) {
+      await deletePlayer(playerId)
+    }
+    setSelectedPlayers([])
+    setSelectAll(false)
+  }
+
+  const filteredPlayers = players.filter(
+    (item) =>
+      item.name.toLowerCase().includes(filterName.toLowerCase()) &&
+      (filterPosition === '' ||
+        item.position.toLowerCase() === filterPosition.toLowerCase())
+  )
 
   return (
     <div className="flex flex-col items-center mt-20">
@@ -80,23 +84,41 @@ export const PlayerTable = ({ players }: IProps) => {
           type="name"
           value={filterName}
         />
-        <Select
-          onChange={(e) => setFilterPosition(e.target.value)}
-          value={filterPosition}
-        >
-          <option>All position</option>
-          <option>Forward</option>
-          <option>Midfielder</option>
-          <option>Defender</option>
-          <option>Goalkeeper</option>
-        </Select>
+        <div className="max-w-md">
+          <Select
+            id="positions"
+            onChange={(e) => setFilterPosition(e.target.value)}
+            required={true}
+          >
+            <option value="">All positions</option>
+            {Object.values(IPosition).map((position) => (
+              <option key={position} value={position}>
+                {position}
+              </option>
+            ))}
+          </Select>
+        </div>
       </div>
+
       <div className="overflow-x-auto w-[60em]">
         <Table className="min-w-full bg-white shadow-lg rounded-lg">
           <Table.Head>
+            <Table.HeadCell>
+              <Checkbox checked={selectAll} onChange={handleSelectAll} />
+            </Table.HeadCell>
             <Table.HeadCell>Id</Table.HeadCell>
             <Table.HeadCell>Name</Table.HeadCell>
             <Table.HeadCell>Team</Table.HeadCell>
+            <Table.HeadCell></Table.HeadCell>
+
+            <Table.HeadCell>
+              {selectedPlayers.length > 0 && (
+                <Button color="failure" onClick={handleDeleteSelected}>
+                  Delete
+                </Button>
+              )}
+            </Table.HeadCell>
+
             <Table.HeadCell>
               <span className="sr-only">Edit</span>
             </Table.HeadCell>
@@ -111,6 +133,16 @@ export const PlayerTable = ({ players }: IProps) => {
                   className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
                   onClick={() => showPlayerDetails(player.id)}
                 >
+                  <Table.Cell>
+                    <Checkbox
+                      checked={selectedPlayers.includes(player.id)}
+                      className="z-20 cursor-pointer"
+                      onChange={(e) => {
+                        e.stopPropagation()
+                        handleSelectPlayer(player.id)
+                      }}
+                    />
+                  </Table.Cell>
                   <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                     {player.id}
                   </Table.Cell>
@@ -121,7 +153,7 @@ export const PlayerTable = ({ players }: IProps) => {
                       className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 z-10"
                       onClick={(e) => {
                         e.stopPropagation()
-                        startEditing(player)
+                        setEditPlayerId(player.id)
                       }}
                     >
                       Edit
@@ -129,10 +161,10 @@ export const PlayerTable = ({ players }: IProps) => {
                   </Table.Cell>
                   <Table.Cell>
                     <button
-                      className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                      className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 z-10"
                       onClick={(e) => {
                         e.stopPropagation()
-                        deletePlayer(player.id)
+                        setDeletePlayerId(player.id)
                       }}
                     >
                       Delete
@@ -140,73 +172,73 @@ export const PlayerTable = ({ players }: IProps) => {
                   </Table.Cell>
                 </Table.Row>
                 <Modal
-                  initialFocus={emailInputRef}
-                  onClose={handleClose}
+                  onClose={() => setEditPlayerId(null)}
                   show={editPlayerId === player.id}
                   size="lg"
                 >
                   <Modal.Header>Edit Player</Modal.Header>
                   <Modal.Body>
-                    <div className="space-y-6">
-                      <div>
-                        <div className="mb-2 block">
-                          <Label htmlFor="name" value="Name" />
+                    <FormInput
+                      buttonColor="success"
+                      functionEvent={(updatedPlayer) =>
+                        handleSave(player.id, updatedPlayer)
+                      }
+                      textButton="Save"
+                      valueState={player}
+                    />
+                  </Modal.Body>
+                </Modal>
+                <Modal
+                  onClose={() => setDeletePlayerId(null)}
+                  popup={true}
+                  show={deletePlayerId === player.id}
+                  size="lg"
+                >
+                  <Modal.Header></Modal.Header>
+                  <Modal.Body>
+                    <div className="">
+                      <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200 text-center" />
+                      <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400 text-center">
+                        Are you sure you want to delete this player?
+                      </h3>
+                      <div className="grid gap-2 mb-12 ml-10">
+                        <div>
+                          <strong>Id:</strong> {player.id}
                         </div>
-                        <TextInput
-                          onChange={(e) => setEditName(e.target.value)}
-                          value={editName}
-                        />
+                        <div>
+                          <strong>Name:</strong> {player.name}
+                        </div>
+                        <div>
+                          <strong>Team:</strong> {player.team}
+                        </div>
+                        <div>
+                          <strong>Number:</strong> {player.number}
+                        </div>
+                        <div>
+                          <strong>Age:</strong> {player.age}
+                        </div>
+                        <div>
+                          <strong>Position:</strong> {player.position}
+                        </div>
                       </div>
-                      <div>
-                        <div className="mb-2 block">
-                          <Label value="Team" />
-                        </div>
-                        <TextInput
-                          onChange={(e) => setEditTeam(e.target.value)}
-                          value={editTeam}
-                        />
-                      </div>
-                      <div>
-                        <div className="mb-2 block">
-                          <Label value="Number" />
-                        </div>
-                        <TextInput
-                          onChange={(e) =>
-                            setEditNumber(Number(e.target.value))
-                          }
-                          value={editNumber}
-                        />
-                      </div>
-                      <div>
-                        <div className="mb-2 block">
-                          <Label value="Age" />
-                        </div>
-                        <TextInput
-                          onChange={(e) => setEditAge(Number(e.target.value))}
-                          value={editAge}
-                        />
-                      </div>
-                      <div className="max-w-md">
-                        <div className="mb-2 block">
-                          <Label value="Position" />
-                        </div>
-                        <Select
-                          onChange={(e) => setEditPosition(e.target.value)}
-                          value={editPosition}
+
+                      <div className="flex justify-center gap-4">
+                        <Button
+                          color="failure"
+                          onClick={() => {
+                            deletePlayer(player.id)
+                            setDeletePlayerId(null)
+                          }}
                         >
-                          <option>{player.position}</option>
-                          <option>Forward</option>
-                          <option>Midfielder</option>
-                          <option>Defender</option>
-                          <option>Goalkeeper</option>
-                        </Select>
+                          Delete
+                        </Button>
+                        <Button
+                          color="gray"
+                          onClick={() => setDeletePlayerId(null)}
+                        >
+                          No, cancel
+                        </Button>
                       </div>
-                      <Button
-                        color="success"
-                        onClick={() => handleSave(player.id)}
-                      >
-                        Save
-                      </Button>
                     </div>
                   </Modal.Body>
                 </Modal>

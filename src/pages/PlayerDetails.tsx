@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { IFootballPlayer } from '../types'
 import { fetchPlayerDetails } from '../api/football-api'
 
+import { Card, Spinner } from 'flowbite-react'
+
 export const PlayerDetail = () => {
   const { playerId } = useParams<{ playerId: string }>()
   const [player, setPlayer] = useState<IFootballPlayer | null>(null)
@@ -23,34 +25,38 @@ export const PlayerDetail = () => {
   }, [playerId])
 
   if (!player) {
-    return <div>Loading...</div>
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner size="xl" />
+      </div>
+    )
   }
 
   return (
     <div className="container w-full flex flex-col justify-center items-center mt-10">
-      <h1 className="text-5xl font-bold mb-3">{player.name}</h1>
-      <div className="bg-gray-50 p-20 rounded-lg shadow-inner">
+      <Card>
+        <h1 className="text-5xl font-bold mb-3">{player.name}</h1>
         <div className="grid gap-4 text-2xl">
-          <div className="text-gray-600">
+          <div>
             <strong>Id:</strong> {player.id}
           </div>
-          <div className="text-gray-600">
+          <div>
             <strong>Name:</strong> {player.name}
           </div>
-          <div className="text-gray-600">
+          <div>
             <strong>Team:</strong> {player.team}
           </div>
-          <div className="text-gray-600">
+          <div>
             <strong>Number:</strong> {player.number}
           </div>
-          <div className="text-gray-600">
+          <div>
             <strong>Age:</strong> {player.age}
           </div>
-          <div className="text-gray-600">
+          <div>
             <strong>Position:</strong> {player.position}
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }
